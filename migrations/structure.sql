@@ -1,0 +1,6 @@
+CREATE TABLE logs (
+  id SERIAL PRIMARY KEY,
+  ip VARCHAR(45),
+  link VARCHAR(255),
+  log_date TIMESTAMP
+);

@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  # db:
+  #   container_name: postgres
+  #   image: postgres
+  #   ports:
+  #     - '5433:${DB_PORT}'
+  #   volumes:
+  #     - ./sql-scripts:/docker-entrypoint-initdb.d/
+  #   environment:
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD}
+  #     - POSTGRES_DB=${DB_NAME}
+  app:
+    build: .
+    ports:
+      - ${PORT}:${PORT}
+    restart: always
+    #DB_HOST: postgres
+    #DB_NAME: hollywood
+    #DB_USER: vova
+    # this needs to be the container port on which the db runs (the right most number under ports in the postgres service)
+    # i.e. we need to specify container port and not the host port
+    #DB_PORT: 5432
+    # depends_on:
+    #   - db
+    volumes:
+    - .:/usr/src/app
+# volumes: 
+#   data: {}
+
+
