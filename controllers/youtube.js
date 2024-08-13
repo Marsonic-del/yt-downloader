@@ -1,29 +1,27 @@
 const { getYtData } = require('../utils/metadata');
 const { NotFoundError } = require('../errors/NotFoundError');
-// const pool = require('../db/db');
-const { errorLogger } = require('../utils/logger');
+const { infoLogger, errorLogger } = require('../utils/logger');
 
 const getYtContent = async (req, res, next) => {
     try {
+        console.log('from controller')
+        const referer = req.get('Referer');
+        const origin = req.get('Origin');
+
+        console.log('Referer:', referer);
+        console.log('Origin:', origin);
+
         const { link } = req.query;
         const ip = req.ip
-        const currentDate = new Date();
+        //const currentDate = new Date();
+
         const response = await getYtData(link)
         res.status(200).json(response)
-
-        // pool.query(
-        //     'INSERT INTO logs (ip, link, log_date) VALUES ($1, $2, $3)RETURNING id, ip, link, log_date',
-        //     [ip, link, currentDate],
-        //     // (err, data) => {
-        //     //     console.log('data: ', data.rows[0])
-        //     //     console.log('err: ', err)
-        //     //     res.status(200).json(response);
-        //     // }
-        // );
-
-
-
+        infoLogger.info({
+            link, ip
+        });
     } catch (error) {
+        console.log(error.message)
         if (error.message.includes('Video unavailable')) {
             return next(new NotFoundError('The video or the link are unavailable'));
         }

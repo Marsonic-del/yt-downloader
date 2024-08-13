@@ -12,31 +12,20 @@ const errorLogFilePath = path.join(__dirname, '../logs', 'error.log');
 const errorLogFileStream = fs.createWriteStream(errorLogFilePath, { flags: 'a' });
 
 const infoLogger = pino({
-    level: 'info',
+    //level: 'info',
     base: { pid: false },
-    transport: {
-        target: 'pino-pretty',
-        options: {
-            colorized: true
-        }
-    },
+    // transport: {
+    //     target: 'pino-pretty',
+    //     options: {
+    //         colorized: true
+    //     }
+    // },
     timestamp: () => `,"time": "${new Date().toLocaleString()}"`,
 }, infoLogFileStream);
 const errorLogger = pino({ level: 'error' }, errorLogFileStream);
 
-function logQueryParams(req, res, next) {
-    const { link } = req.query;
-    const userIP = req.ip;
-
-    infoLogger.info({
-        link, userIP
-    }, 'Received a request with "link" query parameter and user IP');
-    next();
-}
-
 module.exports = {
     infoLogger,
     errorLogger,
-    logQueryParams,
 };
 
