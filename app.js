@@ -9,7 +9,8 @@ const { getCountries, fetchVideos } = require('./utils/videos');
 
 const app = express();
 
-mongoose.connect('mongodb://127.0.0.1:27017/video', {});
+// mongoose.connect('mongodb://127.0.0.1:27017/videos', {});
+mongoose.connect(process.env.MONGO_URI, {});
 
 app.use(cors(corsOptions));
 

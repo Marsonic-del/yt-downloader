@@ -11,7 +11,11 @@ const getCountries = async () => {
         for (let country of response.data.items) {
             const { etag } = country;
             const { gl, name } = country.snippet;
-            await Country.create({ etag, gl, name })
+            const existingCountry = await Country.findOne({ etag });
+            if (!existingCountry) {
+                // Create a new country record if it does not exist
+                await Country.create({ etag, gl, name });
+            }
         }
     } catch (error) {
         console.log(error)
@@ -116,7 +120,6 @@ const _fetchVideoByCategory = async (country, category, nextPageToken) => {
 const fetchVideos = async () => {
     try {
         const countries = await Country.find({});
-        console.log(countries)
         for (let country of countries) {
             await _fetchVideo(country);
         }

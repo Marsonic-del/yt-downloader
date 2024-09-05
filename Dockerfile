@@ -1,11 +1,10 @@
 FROM node:16
 WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
 COPY . .
-RUN mkdir logs
-RUN chmod +x /home/ec2-user/yt-downloader/YtBinary/yt-dlp_linux
+RUN mkdir -p logs
+RUN chmod +x /usr/src/app/YtBinary/yt-dlp_linux
 
-RUN npm install --only=production 
-
-
-
+EXPOSE 8080
 CMD [ "npm", "start" ]
