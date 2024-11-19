@@ -4,6 +4,7 @@ const Video = require('../models/video');
 const Country = require('../models/country');
 
 let countries;
+// for loger
 (async () => {
     countries = await Country.find({});
 })()
@@ -11,7 +12,6 @@ let countries;
 // fetching videos by scrolling in browser
 const getVideosByCategory = async (req, res, next) => {
     const categoryId = req.params.category;
-    console.log(categoryId)
     const { pageNumber, pageSize, limit = 10, country = 'US' } = req.query;
     const currentDate = new Date();
     currentDate.setUTCHours(0, 0, 0, 0);
@@ -21,8 +21,6 @@ const getVideosByCategory = async (req, res, next) => {
 
     try {
         let videos;
-        console.log('pageNumber: ', pageNumber)
-        console.log('pageSize: ', pageSize)
         const skip = (pageNumber - 1) * pageSize;
         if (limit === 'all') {
             videos = await Video.find({ country, category: categoryId }).sort({ date: -1 }).skip(skip).limit(pageSize).exec();
@@ -37,7 +35,9 @@ const getVideosByCategory = async (req, res, next) => {
             videos,
         })
         infoLogger.info({
-            country: countries.find(obj => obj.gl === country).gl
+            country: countries.find(obj => {
+                return obj.gl === country
+            }).name,
         });
     } catch (error) {
         console.log(error)

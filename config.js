@@ -7,8 +7,8 @@ const {
 module.exports = {
     PORT: NODE_ENV === 'production' ? PORT : 8080,
     corsOptions: {
-        origin: ['http://localhost', 'http://localhost:3000', 'http://localhost:5000', 'http://localhost:80', 'https://localhost:3000', 'https://hollywooddownloader.com', 'http://hollywooddownloader.com'],
-        methods: 'POST,OPTIONS',
+        origin: ['http://localhost', 'http://localhost:3000', 'http://localhost:5000', 'http://localhost:80', 'https://localhost:3000', 'https://24youtube.com', 'http://24youtube.com'],
+        methods: 'GET,POST,OPTIONS',
         preflightContinue: false,
         optionsSuccessStatus: 204,
     },
@@ -16,6 +16,8 @@ module.exports = {
         music: 10,
         films: 1,
         games: 20,
-        shorts: 24
-    }
+        shorts: 24,
+        mostPopular: 99,
+    },
+    database: process.env.DB_TYPE,
 };

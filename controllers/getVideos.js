@@ -4,9 +4,10 @@ const Video = require('../models/video');
 const Country = require('../models/country');
 
 let countries;
-(async () => {
-    countries = await Country.find({});
-})()
+// for loger
+// (async () => {
+//     countries = await Country.find({});
+// })()
 
 
 const getVideos = async (req, res, next) => {
@@ -32,9 +33,9 @@ const getVideos = async (req, res, next) => {
             country,
             videos,
         })
-        infoLogger.info({
-            country: countries.find(obj => obj.gl === country).gl
-        });
+        // infoLogger.info({
+        //     country: countries.find(obj => obj.gl === country).gl
+        // });
     } catch (error) {
         console.log(error)
     }

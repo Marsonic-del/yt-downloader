@@ -1,7 +1,9 @@
 require('dotenv').config();
 const axios = require('axios');
-const Country = require('../models/country')
-const Video = require('../models/video')
+const Country = require('../models/country');
+const Video = require('../models/video');
+const dbClient = require('../db');
+const config = require('../config');
 
 const { API_KEY } = process.env;
 
@@ -11,6 +13,7 @@ const getCountries = async () => {
         for (let country of response.data.items) {
             const { etag } = country;
             const { gl, name } = country.snippet;
+            // await dbClient.insertCountry({ etag, gl, name })
             const existingCountry = await Country.findOne({ etag });
             if (!existingCountry) {
                 // Create a new country record if it does not exist
@@ -25,9 +28,11 @@ const getCountries = async () => {
 
 async function updateOrCreateVideo(video, country, categoryToAdd) {
     try {
+        // const existingVideo = await dbClient.isVideoExist(video.id);
         const { id } = video;
         const existingVideo = await Video.findOne({ id });
         if (existingVideo) {
+            // await dbClient.updateVideo(video, country, categoryToAdd)
             await Video.updateOne(
                 { id, },
                 {
@@ -35,20 +40,12 @@ async function updateOrCreateVideo(video, country, categoryToAdd) {
                 }
             );
         } else {
+            // await dbClient.createVideo(video, country, categoryToAdd);
             video.country = [country];
             video.date = new Date();
             video.category = [categoryToAdd];
             await Video.create(video);
         }
-        // const result = await Video.findOneAndUpdate(
-        //     { id, country },
-        //     { $addToSet: { category: categoryToAdd } }, // $addToSet ensures unique categories
-        //     { upsert: true, new: true }
-        // );
-
-        // if (result) {
-        //     console.log(`Document updated/created for id: ${id} and country: ${country}.`);
-        // }
     } catch (error) {
         console.error('Error:', error);
         // } finally {
@@ -60,7 +57,7 @@ async function updateOrCreateVideo(video, country, categoryToAdd) {
 
 const _createVideo = async (videos, country) => {
     for (let video of videos) {
-        await updateOrCreateVideo(video, country, category = 99)
+        await updateOrCreateVideo(video, country, category = config.categories.mostPopular)
         // video.country = country;
         // video.date = new Date();
         // await Video.create(video)
@@ -82,6 +79,7 @@ const _fetchVideo = async (country, nextPageToken) => {
         const response = await axios.get(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics,topicDetails,status,recordingDetails,localizations&maxResults=50&chart=mostPopular&regionCode=${country.gl}&key=${API_KEY}&pageToken=${nextPageToken}`);
 
         await _createVideo(response.data.items, country.gl);
+        console.log('country: ', country.name)
 
         if ('nextPageToken' in response.data) {
             await _fetchVideo(country, response.data['nextPageToken'])
@@ -120,6 +118,7 @@ const _fetchVideoByCategory = async (country, category, nextPageToken) => {
 const fetchVideos = async () => {
     try {
         const countries = await Country.find({});
+        // const countries = await dbClient.getCountries();
         for (let country of countries) {
             await _fetchVideo(country);
         }
@@ -131,6 +130,7 @@ const fetchVideos = async () => {
 
 const fetchVideosByCategory = async (categoryId) => {
     try {
+        // const countries = await dbClient.getCountries();
         const countries = await Country.find({});
         for (let country of countries) {
             await _fetchVideoByCategory(country, categoryId);

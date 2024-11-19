@@ -6,6 +6,7 @@ const { NODE_ENV } = process.env;
 
 const ytPath = path.join(__dirname, `../YtBinary/${NODE_ENV === 'production' ? 'yt-dlp_linux' : 'yt-dlp.exe'}`)
 const ytDlpWrap = new YTDlpWrap(ytPath);
+console.log('nodeenv= ', process.env.NODE_ENV);
 
 const format_noteFullVideo = ['360p', '360p, THROTTLED', '720p',];
 const format_noteVideoOnly = ['240p', '360p', '480', '720p', '1080p',];
@@ -14,7 +15,7 @@ const format_noteAudioOnly = ['medium', 'low'];
 
 const getYoutubeMetadata = async (link) => {
     const metadata = await ytDlpWrap.getVideoInfo(link);
-    //console.log(Object.keys(metadata))
+    // console.log(Object.keys(metadata))
     // console.log(metadata.formats
     //     .filter(item => item.protocol === 'https' & item.vcodec !== 'none' & item.acodec !== 'none'))
     return metadata;

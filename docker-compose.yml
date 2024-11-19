@@ -1,19 +1,16 @@
-# version: '3.8'
-# services:
-
 
 version: '3'
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:6.0
     container_name: mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
 
   app:
     # image: marsonic/hollapi
@@ -22,11 +19,11 @@ services:
     ports:
       - 5000:8080
     environment:
-      API_KEY: 'AIzaSyDh-SVBSWlSXGgLIb4oA3WbGsCQu1mjHIw'
-      PASSWORD_FOR_ROUTE: vova1986
-      PORT: 8080
-      NODE_ENV: production
-      MONGO_URI: mongodb://root:example@mongo:27017/videos?authSource=admin
+      API_KEY: ${API_KEY}
+      PASSWORD_FOR_ROUTE: ${PASSWORD_FOR_ROUTE}
+      PORT: ${PORT}
+      NODE_ENV: ${NODE_ENV}
+      MONGO_URI: ${MONGO_URI}
     depends_on:
       - mongo
     volumes:
